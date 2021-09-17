@@ -48,31 +48,6 @@ export default class StoryScreen extends Component {
     this.fetchUser();
   }
 
-  likeAction = () => {
-    if (this.state.is_liked) {
-      firebase.database()
-        .ref('posts')
-        .child(this.state.story_id)
-        .child('likes')
-        .set(firebase.database.ServerValue.increment(-1))
-      this.setState({
-        likes: this.state.likes - 1,
-        is_liked: false
-      })
-    }
-    else {
-      firebase.database()
-        .ref('posts')
-        .child(this.state.story_id)
-        .child('likes')
-        .set(firebase.database.ServerValue.increment(1))
-      this.setState({
-        likes: this.state.likes + 1,
-        is_liked: true
-      })
-    }
-  };
-
   fetchUser = () => {
     let theme;
     firebase
@@ -99,7 +74,33 @@ export default class StoryScreen extends Component {
     }
   }
 
+  likeAction = () => {
+    if (this.state.is_liked) {
+      firebase.database()
+        .ref('posts')
+        .child(this.state.story_id)
+        .child('likes')
+        .set(firebase.database.ServerValue.increment(-1))
+      this.setState({
+        likes: this.state.likes - 1,
+        is_liked: false
+      })
+    }
+    else {
+      firebase.database()
+        .ref('posts')
+        .child(this.state.story_id)
+        .child('likes')
+        .set(firebase.database.ServerValue.increment(1))
+      this.setState({
+        likes: this.state.likes + 1,
+        is_liked: true
+      })
+    }
+  };
+
   render() {
+    let story = this.state.story_data;
     if (!this.props.route.params) {
       this.props.navigation.navigate("Home");
     } else if (!this.state.fontsLoaded) {
@@ -214,30 +215,30 @@ export default class StoryScreen extends Component {
                 </Text>
               </View>
               <View style={styles.actionContainer}>
-                <TouchableOpacity
-                  style={
-                    this.state.is_liked
-                      ? styles.likeButtonLiked
-                      : styles.likeButtonDisliked
-                  }
-                  onPress={() => this.likeAction()}
-                >
-                  <Ionicons
-                    name={"heart"}
-                    size={RFValue(30)}
-                    color={this.state.light_theme ? "black" : "white"}
-                  />
+              <TouchableOpacity
+                style={
+                  this.state.is_liked
+                    ? styles.likeButtonLiked
+                    : styles.likeButtonDisliked
+                }
+                onPress={() => this.likeAction()}
+              >
+                <Ionicons
+                  name={"heart"}
+                  size={RFValue(30)}
+                  color={this.state.light_theme ? "black" : "white"}
+                />
 
-                  <Text
-                    style={
-                      this.state.light_theme
-                        ? styles.likeTextLight
-                        : styles.likeText
-                    }
-                  >
-                    {this.state.likes}
-                  </Text>
-                </TouchableOpacity>
+                <Text
+                  style={
+                    this.state.light_theme
+                      ? styles.likeTextLight
+                      : styles.likeText
+                  }
+                >
+                  {this.state.likes}
+                </Text>
+              </TouchableOpacity>
               </View>
             </ScrollView>
           </View>
@@ -393,24 +394,5 @@ const styles = StyleSheet.create({
     fontFamily: "Bubblegum-Sans",
     fontSize: RFValue(25),
     marginLeft: RFValue(5)
-  },
-  likeButtonLiked: {
-    width: RFValue(160),
-    height: RFValue(40),
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    backgroundColor: "#eb3948",
-    borderRadius: RFValue(30)
-  },
-  likeButtonDisliked: {
-    width: RFValue(160),
-    height: RFValue(40),
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    borderColor: "#eb3948",
-    borderWidth: 2,
-    borderRadius: RFValue(30)
   }
 });
